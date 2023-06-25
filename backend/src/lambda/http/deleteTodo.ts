@@ -4,15 +4,28 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
 
-import { deleteTodo } from '../../businessLogic/todos'
-import { getUserId } from '../utils'
+import { deleteTodo } from '../../helpers/todos'
+import { createLogger } from '../../utils/logger'
+
+const logger = createLogger('createTodoHandler')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId
-    // TODO: Remove a TODO item by id
-    
-    return undefined
+    try {
+      return await deleteTodo(event)
+    } catch (error) {
+      logger.error('Error deleteTodo', error.message)
+
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({
+          error: 'Error deleteTodo!'
+        })
+      }
+    }
   }
 )
 
