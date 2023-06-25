@@ -84,7 +84,7 @@ export async function updateTodo(
     }
     const todo: UpdateTodoRequest = JSON.parse(event.body)
 
-    await todoAccess.updateTodo(todoId, userId, todo)
+    await todoAccess.updateTodo(userId, todoId, todo)
 
     logger.info('updateTodo', { userId, todoId, todo })
 
